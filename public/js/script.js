@@ -1,4 +1,4 @@
-fetch('/config')
+fetch('/config.json')
   .then((response) => response.json())
   .then((config) => {
     const sheetURL = config.sheetURL; 

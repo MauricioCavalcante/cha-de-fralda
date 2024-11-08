@@ -1,0 +1,36 @@
+name: Processar dados da planilha e gerar arquivo JSON
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  process-csv:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checar código
+      uses: actions/checkout@v2
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Instalar dependências
+      run: npm install
+
+    - name: Processar planilha CSV
+      env:
+        SHEET_URL: ${{ secrets.SHEET_URL }}
+      run: |
+        node processCsv.js
+
+    - name: Fazer commit e push do arquivo JSON gerado
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add public/data.json
+        git commit -m "Atualizar dados processados"
+        git push
