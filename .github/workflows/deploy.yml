@@ -3,29 +3,34 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main # Gatilho para o push para a branch principal
+      - main  # Gatilho para o push para a branch principal
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest # Ambiente do GitHub Actions
+    runs-on: ubuntu-latest  # Ambiente do GitHub Actions
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # Faz o checkout do código do repositório
+        uses: actions/checkout@v3  # Faz o checkout do código do repositório
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: '16'
 
       - name: Install dependencies
-        run: npm install # Instala as dependências
+        run: npm install  # Instala as dependências
 
       - name: Build (if needed)
-        run: npm run build # Execute o comando de build (se necessário)
+        run: npm run build  # Execute o comando de build (se necessário)
+
+      - name: Configure Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Usa o token do GitHub
-          publish_dir: ./public # Diretório onde seus arquivos estáticos estão
+          github_token: ${{ secrets.GH_PAT }}  # Usando o seu PAT
+          publish_dir: ./public  # Diretório onde seus arquivos estáticos estão
