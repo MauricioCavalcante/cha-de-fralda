@@ -12,7 +12,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url("./images/fundo.png");
+    background-image: url("../img/fundo.png");
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +51,7 @@ main {
         width: 200px;
         border-radius: 50%;
         border: 3px solid var(--pink-color);
-        background-image: url('./images/ursinha.png');
+        background-image: url('../img/ursinha.png');
         background-position: center;
         background-size: cover;
         overflow: hidden;
