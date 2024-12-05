@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import GlobalStyles from './styles/GlobalStyles';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+document.documentElement.lang = 'pt-BR';
 root.render(
   <React.StrictMode>
+    <GlobalStyles />
     <App />
   </React.StrictMode>
 );
