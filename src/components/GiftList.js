@@ -18,6 +18,7 @@ function GiftList() {
     quantidade: "",
     data: new Date().toISOString().split("T")[0],
     tipoDoacao: "Pix",
+    valorCompartilhado: "",
   });
 
   const apiUrl = process.env.REACT_APP_SCRIPT_URL;
@@ -75,8 +76,11 @@ function GiftList() {
           quantidade: "",
           data: new Date().toISOString().split("T")[0],
           tipoDoacao: "Pix",
+          valorCompartilhado: "",
         });
-        setTimeout(() => { setShowModal(false); }, 2000);
+        setTimeout(() => {
+          setShowModal(false);
+        }, 2000);
         fetchData();
       } else {
         alert("Erro ao enviar os dados: " + result.message);
@@ -84,7 +88,7 @@ function GiftList() {
     } catch (error) {
       console.error("Erro:", error);
       alert("Erro ao enviar os dados.");
-    }finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -99,33 +103,50 @@ function GiftList() {
         {gifts.map((gift) => {
           const maxQuantity = Number(gift[3]) || 0;
           const donatedQuantity = Number(gift[4]) || 0;
-          const isDisabled = maxQuantity > 0 && donatedQuantity >= maxQuantity;
+          const donatedAmount = Number(gift[4]);
+          const isDisabled =
+            gift[5] > 250
+              ? donatedAmount === gift[5]
+              : maxQuantity > 0 && donatedQuantity >= maxQuantity;
 
           return (
             <div key={gift[0]} className="col-md-4 mb-4">
               <div className="card">
                 <h5 className="card-title">{gift[1]}</h5>
-                <img src={gift[6]} alt={gift[1]} style={{ height: "200px", objectFit: "cover" }} />
+                <img
+                  src={gift[6]}
+                  alt={gift[1]}
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
                 <div className="card-body">
-                  <p className="card-text">
-                    <strong>Valor:</strong> R${gift[5]}
-                  </p>
-                  <p className="card-text">
-                    {maxQuantity === 0 ? (
-                      <span>
-                        <strong>Presenteado:</strong> {donatedQuantity}
-                      </span>
-                    ) : (
-                      <span className="d-flex justify-content-center gap-2">
-                        <div>
-                          <strong>Máximo:</strong> {maxQuantity}
-                        </div>
-                        <div>
-                          <strong>Presenteado:</strong> {donatedQuantity}
-                        </div>
-                      </span>
-                    )}
-                  </p>
+                  {!isDisabled && (
+                    <>
+                      <p className="card-text">
+                        <strong>Valor:</strong> R${gift[5].toFixed(2)}
+                      </p>
+                      <p className="card-text">
+                        {gift[5] > 250 ? (
+                          <span>
+                            <strong>Valor Arrecadado:</strong> R$
+                            {donatedAmount.toFixed(2)}
+                          </span>
+                        ) : maxQuantity === 0 ? (
+                          <span>
+                            <strong>Presenteado:</strong> {donatedQuantity}
+                          </span>
+                        ) : (
+                          <span className="d-flex justify-content-center gap-2">
+                            <div>
+                              <strong>Máximo:</strong> {maxQuantity}
+                            </div>
+                            <div>
+                              <strong>Presenteado:</strong> {donatedQuantity}
+                            </div>
+                          </span>
+                        )}
+                      </p>
+                    </>
+                  )}
                   <Button
                     className="btn-custom"
                     onClick={() => {

@@ -23,17 +23,17 @@ function Home() {
           <h5>Estamos ansiosos para celebrar com você!</h5>
           <h4>Dia 26/01/2025 às 12:00</h4>
         </div>
-        <div className="p-3">
-          <h5>Leve sua bebida!</h5>
+        <div className="p-3 mt-3">
+          <h5><u><strong>Leve sua bebida!</strong></u></h5>
         </div>
-        <Maps />
         <Button
           type="button"
-          className="btn-copy mt-3 mb-5"
+          className="btn-copy mb-5 ps-5 pe-5"
           onClick={() => setModalShow(true)}
         >
           Confirmar Presença
         </Button>
+        <Maps />
       </div>
       <PresenceModal
         show={modalShow}

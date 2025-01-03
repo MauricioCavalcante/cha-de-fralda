@@ -45,6 +45,7 @@ function DonationModal({
         tipoDoacao: "",
         data: currentDate,
         id: selectedGift[0],
+        valorCompartilhado: "",
       }));
     }
   }, [selectedGift, setFormData]);
@@ -126,7 +127,11 @@ function DonationModal({
                 value={formData.quantidade}
                 onChange={handleChange}
                 min="1"
-                max={maxQuantity === Infinity ? undefined : maxQuantity}
+                max={
+                  maxQuantity === Infinity
+                    ? undefined
+                    : maxQuantity - selectedGift[4]
+                }
                 required
               />
             </Form.Group>
@@ -143,6 +148,9 @@ function DonationModal({
               >
                 <option value="">Selecione aqui</option>
                 <option value="Pix">Pix</option>
+                {selectedGift && selectedGift[5] > 250 && (
+                  <option value="Compartilhado">Valor Parcial</option>
+                )}
                 <option value="Comprar">
                   Comprar Presente (levar em mãos)
                 </option>
@@ -154,9 +162,16 @@ function DonationModal({
               value={currentDate}
               required
             />
+            <Form.Control
+              type="hidden"
+              name="valorCompartilhado"
+              value={currentDate}
+              required
+            />
+
             {formData.tipoDoacao === "" && selectedGift && selectedGift[5] && (
               <div>
-                <strong>Selecione o tipo de presente</strong>
+                <strong>Selecione como deseja presentear</strong>
               </div>
             )}
 
@@ -191,11 +206,12 @@ function DonationModal({
                 <Form.Group>
                   <Form.Label className="mt-3">
                     <strong>Valor Total:</strong>
-                    {typeof selectedGift[5] === "number" &&
-                    typeof formData?.quantidade === "number"
-                      ? `R$ ${(selectedGift[5] * formData.quantidade).toFixed(
-                          2
-                        )}`
+                    {selectedGift &&
+                    !isNaN(selectedGift[5]) &&
+                    !isNaN(formData.quantidade)
+                      ? `R$ ${(
+                          Number(selectedGift[5]) * Number(formData.quantidade)
+                        ).toFixed(2)}`
                       : "Indefinido"}
                   </Form.Label>
                   <div>
@@ -214,6 +230,36 @@ function DonationModal({
                   </div>
                 </Form.Group>
               )}
+            {formData.tipoDoacao === "Compartilhado" && (
+              <Form.Group controlId="sharedDonationAmount">
+                <Form.Label className="mt-3">
+                  <strong>Presentear com valor parcial</strong>
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  name="valorCompartilhado"
+                  value={formData.valorCompartilhado}
+                  onChange={(e) => {
+                    const inputValue = Number(e.target.value);
+                    const maxValue = selectedGift[5]-selectedGift[4];
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      valorCompartilhado:
+                        inputValue > maxValue ? maxValue : inputValue,
+                    }));
+                  }}
+                  min="1"
+                  max={selectedGift ? selectedGift[5] : undefined}
+                  placeholder="Digite com quanto deseja contribuir"
+                  required
+                />
+                <div className="d-flex justify-content-center mt-3">
+                  <PaymentQRCode
+                    valorTotal={formData.valorCompartilhado || 50}
+                  />
+                </div>
+              </Form.Group>
+            )}
 
             <Button
               type="submit"
